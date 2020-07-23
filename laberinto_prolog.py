@@ -1,6 +1,6 @@
 import numpy as np
 import os
-# from pyswip import Prolog
+from pyswip import *
 import tkinter as tk
 from tkinter import Canvas
 
@@ -20,14 +20,12 @@ def arreglada():
     return [[x.replace('\n', '') for x in y] for y in leer()]
 
 
-print(np.array(arreglada()))
-print(len(arreglada()))
 l = []
 for lista in range(len(arreglada())):
     for i in range(len(arreglada()[lista])):
         if lista == 0 and arreglada()[lista][i] == 'I':
-            l.append('conecta(' + arreglada()[lista][i] + ',' + arreglada()[lista + 1][i] + ')')
-            archivo = 'conecta(inicio' + ',' + arreglada()[lista + 1][i] + ').'
+            l.append('conecta(' + arreglada()[lista][i] + ',' + arreglada()[lista + 2][i] + ')')
+            archivo = 'conecta(inicio' + ',' + arreglada()[lista + 2][i] + ').'
 
         if lista > 0 and arreglada()[lista][i] != '|' and arreglada()[lista][i] != '-' and arreglada()[lista][i] != '0':
             # en esta parte  ya esta ubicado en los numeros y letras "por el I de inicio y F de fin"
@@ -42,8 +40,6 @@ for lista in range(len(arreglada())):
                 l.append('conecta(' + arreglada()[lista][i] + ',' + arreglada()[lista + 2][i] + ')')
                 archivo = archivo + '\n' + 'conecta(' + arreglada()[lista][i] + ',' + 'fin).'
 
-print(l)
-
 archivo = archivo + '\n' + 'conectado(Pos1,Pos2) :- conecta(Pos1,Pos2).'
 archivo = archivo + '\n' + 'conectado(Pos1,Pos2) :- conecta(Pos2,Pos1).'
 archivo = archivo + '\n' + 'miembro(X,[X|_]).'
@@ -54,12 +50,17 @@ archivo = archivo + '\n' + 'camino([PosActual|RestoDelCamino],Sol) :- conectado(
 f.write(archivo)
 f.close()
 
-# prolog = Prolog()
-# prolog.consult('labe.pl')
-# solucion = prolog.query("sol")
-solucion = ['fin', 32, 33, 34, 28, 27, 26, 20, 14, 15, 21, 22, 16, 10, 4, 3, 2, 'inicio']
-solucion.reverse()
+prolog = Prolog()
+prolog.consult('labe.pl')
+solucion= []
+for i in prolog.query("camino([inicio],Sol)"):
+    for j in i["Sol"]:
+        solucion.append(j)
+    break
+
 print(solucion)
+# solucion = ['fin', 32, 33, 34, 28, 27, 26, 20, 14, 15, 21, 22, 16, 10, 4, 3, 2, 'inicio']
+# solucion.reverse()
 
 
 def dibujar():
@@ -70,7 +71,6 @@ def dibujar():
     for lista in range(len(arreglada())):
         for i in range(len(arreglada()[lista])):
             if lista % 2 == 0 and i % 2 != 0 and lista > 0 and lista < 14:
-                print(int(arreglada()[lista][i]))
                 if int(arreglada()[lista][i]) in solucion:
                     lienzo.create_text(x, y, text=arreglada()[lista][i], fill='red')
                 else:
