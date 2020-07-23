@@ -52,15 +52,10 @@ f.close()
 
 prolog = Prolog()
 prolog.consult('labe.pl')
-solucion= []
+solucion = []
 for i in prolog.query("camino([inicio],Sol)"):
     for j in i["Sol"]:
         solucion.append(j)
-    break
-
-print(solucion)
-# solucion = ['fin', 32, 33, 34, 28, 27, 26, 20, 14, 15, 21, 22, 16, 10, 4, 3, 2, 'inicio']
-# solucion.reverse()
 
 
 def dibujar():
